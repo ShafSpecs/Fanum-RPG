@@ -60,26 +60,15 @@ bool Game::is_game_over() {
 }
 
 bool Game::is_move_valid(const char direction) const {
-    if (direction != 'n' && direction != 's' && direction != 'e' && direction != 'w') {
-        return false;
+    int x = player.x, y = player.y;
+
+    switch (direction) {
+        case 'n': y--; break;
+        case 's': y++; break;
+        case 'w': x--; break;
+        case 'e': x++; break;
+        default: return false;
     }
 
-    if (direction == 'n' && player.y <= 0) {
-        return false;
-    }
-    if (direction == 's' && player.y >= MAP_SIZE - 1) {
-        return false;
-    }
-    if (direction == 'w' && player.x <= 0) {
-        return false;
-    }
-    if (direction == 'e' && player.x >= MAP_SIZE - 1) {
-        return false;
-    }
-
-    if (player.x < 0 || player.x >= MAP_SIZE || player.y < 0 || player.y >= MAP_SIZE) {
-        return false;
-    }
-
-    return true;
+    return x >= 0 && x < MAP_SIZE && y >= 0 && y < MAP_SIZE;
 }
