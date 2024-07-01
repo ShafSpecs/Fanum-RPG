@@ -2,12 +2,13 @@
 
 #include "Game.h"
 
-Game::Game(): map(MAP_SIZE, std::vector<char>(MAP_SIZE, '.')),
-              player(0, 0, 3),
-              destination_x(MAP_SIZE - 1),
-              destination_y(MAP_SIZE - 1) {
-    map[0][0] = 'P';
-    map[destination_y][destination_x] = 'B';
+Game::Game(): map(Map(MAP_SIZE)),
+              player(0, 0, 3)
+{
+    map.generate_map();
+    map.set_coordinate_value(0, 0, 'P');
+    auto [y, x] = map.get_destination();
+    map.set_coordinate_value(y, x, 'B');
 }
 
 void Game::play_turn() {
@@ -20,11 +21,17 @@ void Game::play_turn() {
         return;
     }
 
-    map[player.y][player.x] = '.';
-    player.move(move);
-    map[player.y][player.x] = 'P';
+    if (player.x == 0 && player.y == 0)
+        map.set_coordinate_value(player.y, player.x, 'A');
+    else
+        map.set_coordinate_value(player.y, player.x, '.');
 
-    if (player.x == destination_x && player.y == destination_y) {
+    player.move(move);
+    map.set_coordinate_value(player.y, player.x, 'P');
+
+    auto [y, x] = map.get_destination();
+
+    if (player.y == y && player.x == x) {
         std::cout << "Congratulations! You've reached the destination.\n";
     } else if (player.moves_left == 0) {
         player.moves_left = 3; // Reset moves for next turn
@@ -32,22 +39,17 @@ void Game::play_turn() {
     }
 }
 
-
 void Game::display_map() {
-    for (const auto &row: map) {
-        for (const char cell: row) {
-            std::cout << cell << ' ';
-        }
-        std::cout << '\n';
-    }
-    std::cout << "Moves left: " << player.moves_left << '\n';
+    map.display_map();
 }
 
-bool Game::is_game_over() const {
-    return (player.x == destination_x && player.y == destination_y);
+
+bool Game::is_game_over() {
+    auto [y, x] = map.get_destination();
+    return (player.x == x && player.y == y);
 }
 
-bool Game::is_move_valid(char direction) const {
+bool Game::is_move_valid(const char direction) const {
     if (direction != 'n' && direction != 's' && direction != 'e' && direction != 'w') {
         return false;
     }
