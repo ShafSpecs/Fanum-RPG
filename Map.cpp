@@ -40,7 +40,10 @@ void Map::set_coordinate_value(const int y, const int x, const char value) {
 }
 
 char Map::get_coordinate_value(const int y, const int x) const {
-    return map[y][x];
+    if (y >= 0 && y < map.size() && x >= 0 && x < map[y].size()) {
+        return map[y][x];
+    }
+    return ' ';
 }
 
 std::pair<int, int> Map::get_destination() {
