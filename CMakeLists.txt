@@ -7,4 +7,6 @@ add_executable(FanumRPG main.cpp
         Player.cpp
         Player.h
         Game.cpp
-        Game.h)
+        Game.h
+        Map.cpp
+        Map.h)
