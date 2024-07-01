@@ -15,7 +15,7 @@ void Game::play_turn() {
     std::cout << "Enter move (n/s/e/w): ";
     std::cin >> move;
 
-    if (move != 'n' && move != 's' && move != 'e' && move != 'w') {
+    if (!is_move_valid(move)) {
         std::cout << "Invalid move. Try again.\n";
         return;
     }
@@ -45,4 +45,29 @@ void Game::display_map() {
 
 bool Game::is_game_over() const {
     return (player.x == destination_x && player.y == destination_y);
+}
+
+bool Game::is_move_valid(char direction) const {
+    if (direction != 'n' && direction != 's' && direction != 'e' && direction != 'w') {
+        return false;
+    }
+
+    if (direction == 'n' && player.y <= 0) {
+        return false;
+    }
+    if (direction == 's' && player.y >= MAP_SIZE - 1) {
+        return false;
+    }
+    if (direction == 'w' && player.x <= 0) {
+        return false;
+    }
+    if (direction == 'e' && player.x >= MAP_SIZE - 1) {
+        return false;
+    }
+
+    if (player.x < 0 || player.x >= MAP_SIZE || player.y < 0 || player.y >= MAP_SIZE) {
+        return false;
+    }
+
+    return true;
 }

@@ -18,6 +18,8 @@ private:
     std::vector<std::vector<char>> map;
     Player player;
     int destination_x, destination_y;
+
+    [[nodiscard]] bool is_move_valid(char direction) const;
 };
 
 
