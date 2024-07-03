@@ -3,6 +3,7 @@
 #define GAME_ENGINE_H
 
 #include "Game.h"
+#include "../drivers/DisplayDriver.h"
 
 class GameEngine {
 public:
@@ -11,6 +12,8 @@ public:
 
 private:
     Game game_;
+    DisplayDriver display_driver_;
+    Displayable* current_displayable_;
 };
 
 #endif // GAME_ENGINE_H

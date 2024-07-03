@@ -1,10 +1,14 @@
 #include "GameEngine.h"
 
-GameEngine::GameEngine() : game_(Game())
+GameEngine::GameEngine():
+  game_(Game()),
+  display_driver_(DisplayDriver(game_)),
+  current_displayable_(&game_)
 {
+
 }
 
 void GameEngine::run()
 {
-  game_.play();
+  display_driver_.run();
 }

@@ -1,93 +1,71 @@
+#include <algorithm>
 #include <iostream>
+#include <ftxui/dom/elements.hpp>
 
 #include "Game.h"
 
-Game::Game() : map(Map(MAP_SIZE)),
-               player(0, 0, 3)
+using namespace ftxui;
+
+Game::Game() : map_(Map(MAP_SIZE)),
+               player_(0, 0),
+               moves_left_(MOVES_PER_TURN)
 {
-  map.generate_map();
-  map.set_coordinate_value(0, 0, 'P');
-  auto [y, x] = map.get_destination();
-  map.set_coordinate_value(y, x, 'B');
 }
 
 void Game::play()
 {
   while (!is_game_over())
   {
-    display_map();
     play_turn();
   }
 }
 
 void Game::play_turn()
 {
-  std::cout << "Enter move (n/s/e/w): ";
-
-  char move;
-  std::cin >> move;
-
-  std::cout << "Move: " << move << std::endl;
-
-  if (!is_move_valid(move))
-  {
-    std::cout << "Invalid move. Try again.\n";
-    return;
-  }
-
-  if (player.x == 0 && player.y == 0)
-    map.set_coordinate_value(player.y, player.x, 'A');
-  else
-    map.set_coordinate_value(player.y, player.x, '.');
-
-  player.move(move);
-  map.set_coordinate_value(player.y, player.x, 'P');
-
-  const auto [y, x] = map.get_destination();
-
-  if (player.y == y && player.x == x)
-  {
-    std::cout << "Congratulations! You've reached the destination.\n";
-  }
-  else if (player.moves_left == 0)
-  {
-    player.moves_left = 3; // Reset moves for next turn
-    std::cout << "Turn ended. Moves reset.\n";
-  }
-}
-
-void Game::display_map()
-{
-  map.display_map();
+  // ...
 }
 
 bool Game::is_game_over()
 {
-  auto [y, x] = map.get_destination();
-  return (player.x == x && player.y == y);
+  // auto [y, x] = map_.get_destination();
+  // return (player_.x == x && player_.y == y);
+  return false;
 }
 
-bool Game::is_move_valid(const char direction) const
+bool Game::is_move_valid(int x, int y) const
 {
-  int x = player.x, y = player.y;
+  return map_.is_within_bounds(x, y);
+}
 
-  switch (direction)
-  {
-  case 'n':
-    y--;
-    break;
-  case 's':
-    y++;
-    break;
-  case 'w':
-    x--;
-    break;
-  case 'e':
-    x++;
-    break;
-  default:
-    return false;
-  }
+Element Game::render() {
+    map_ = Map(MAP_SIZE); // Reset map
+    map_.move_player(player_.x, player_.y);
 
-  return x >= 0 && x < MAP_SIZE && y >= 0 && y < MAP_SIZE;
+    Elements board;
+    auto map_grid = map_.get_map();
+    for (int y = 0; y < MAP_SIZE; ++y) {
+        Elements row;
+        for (int x = 0; x < MAP_SIZE; ++x) {
+            if (map_grid[y][x] == 'P') {
+                row.push_back(text("P") | bgcolor(Color::Red));
+            } else {
+                row.push_back(text("."));
+            }
+        }
+        board.push_back(hbox(std::move(row)));
+    }
+    return vbox(std::move(board));
+}
+
+void Game::move_player(int dx, int dy) {
+  int new_x = std::clamp(player_.x + dx, 0, MAP_SIZE - 1);
+    int new_y = std::clamp(player_.y + dy, 0, MAP_SIZE - 1);
+    if (is_move_valid(new_x, new_y) && moves_left_ > 0) {
+        player_.x = new_x;
+        player_.y = new_y;
+        moves_left_--;
+    }
+    if (moves_left_ == 0) {
+        moves_left_ = MOVES_PER_TURN;
+    }
 }
