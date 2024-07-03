@@ -8,16 +8,14 @@ class Map {
 public:
     explicit Map(int seed);
 
-    void generate_map();
-    void display_map();
-    void set_coordinate_value(int y, int x, char value);
-
     [[nodiscard]] int get_size() const;
-    [[nodiscard]] char get_coordinate_value(int y, int x) const;
-    std::pair<int, int> get_destination();
+
+    bool is_within_bounds(int x, int y) const;
+    void move_player(int x, int y);
+    std::vector<std::vector<char>> get_map() const;
 private:
-    int seed, destination_x, destination_y;
-    std::vector<std::vector<char>> map;
+    int seed_;
+    std::vector<std::vector<char>> map_;
 };
 
 #endif //MAP_H

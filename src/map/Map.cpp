@@ -2,51 +2,30 @@
 
 #include <iostream>
 
-Map::Map(int seed):
-    seed(seed),
-    destination_x(seed - 1),
-    destination_y(seed - 1),
-    map(seed, std::vector<char>(seed, '.'))
+Map::Map(const int seed):
+    seed_(seed),
+    map_(seed, std::vector<char>(seed, '.'))
 {
-    if (seed <= 0) {
+    if (seed_ <= 0) {
         std::cout << "Seed cannot be 0. Using default seed 10.\n";
-        seed = 10;
-    }
-}
-
-void Map::generate_map() {
-    for (int y = 0; y < seed; ++y) {
-        for (int x = 0; x < seed; ++x) {
-            map[y][x] = '.';
-        }
+        seed_ = 10;
     }
 }
 
 int Map::get_size() const {
-    return seed;
+    return seed_;
 }
 
-void Map::display_map() {
-    for (const auto& row : map) {
-        for (const char cell : row) {
-            std::cout << cell << ' ';
-        }
-        std::cout << '\n';
-    }
+std::vector<std::vector<char>> Map::get_map() const {
+    return map_;
 }
 
-void Map::set_coordinate_value(const int y, const int x, const char value) {
-    map[y][x] = value;
+bool Map::is_within_bounds(int x, int y) const {
+    return x >= 0 && x < seed_ && y >= 0 && y < seed_;
 }
 
-char Map::get_coordinate_value(const int y, const int x) const {
-    if (y >= 0 && y < map.size() && x >= 0 && x < map[y].size()) {
-        return map[y][x];
-    }
-    return ' ';
+void Map::move_player(int x, int y) {
+  if (is_within_bounds(x, y)) {
+    map_[y][x] = 'P';
+  }
 }
-
-std::pair<int, int> Map::get_destination() {
-    return {destination_y, destination_x};
-}
-
