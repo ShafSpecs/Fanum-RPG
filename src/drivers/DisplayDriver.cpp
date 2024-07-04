@@ -13,5 +13,8 @@ void DisplayDriver::run()
   auto renderer = Renderer([&]
                            { return displayable_.render() | border; });
 
-  screen_.Loop(renderer);
+  auto component = CatchEvent(renderer, [&](Event event)
+                              { return displayable_.handle_event(event); });
+
+  screen_.Loop(component);
 }

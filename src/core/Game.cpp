@@ -69,3 +69,20 @@ void Game::move_player(int dx, int dy) {
         moves_left_ = MOVES_PER_TURN;
     }
 }
+
+bool Game::handle_event(Event event) {
+    if (event == Event::ArrowUp) {
+        move_player(0, -1);
+        return true;
+    } else if (event == Event::ArrowDown) {
+        move_player(0, 1);
+        return true;
+    } else if (event == Event::ArrowLeft) {
+        move_player(-1, 0);
+        return true;
+    } else if (event == Event::ArrowRight) {
+        move_player(1, 0);
+        return true;
+    }
+    return false;
+}

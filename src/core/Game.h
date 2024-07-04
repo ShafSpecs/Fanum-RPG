@@ -16,6 +16,7 @@ public:
     void move_player(int dx, int dy);
 
     ftxui::Element render() override;
+    bool handle_event(ftxui::Event event) override;
 private:
     static constexpr int MAP_SIZE = 10;
     static constexpr int MOVES_PER_TURN = 3;
